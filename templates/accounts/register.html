@@ -1,23 +1,70 @@
 
 {% extends "base.html" %}
 
+{% block title %}Create Account | AI Meeting Summarizer{% endblock %}
+
 {% block content %}
-<div class="container mt-5" style="max-width: 500px;">
-    <h2>Create Your Account</h2>
-    <p>Register to start summarizing your meetings.</p>
+<div class="auth-page">
+    <div class="auth-card">
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+        <div class="auth-brand">
+            <div class="auth-logo">AI</div>
+            <span>Meeting Summarizer</span>
+        </div>
 
-        <button type="submit" class="btn btn-primary">
-            Register
-        </button>
-    </form>
+        <div class="auth-heading">
+            <h2>Create your account</h2>
+            <p>Turn meeting conversations into clear summaries and actionable insights.</p>
+        </div>
 
-    <p class="mt-3">
-        Already have an account?
-        <a href="#">Login</a>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="auth-field">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <small class="field-help">{{ field.help_text|safe }}</small>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <small class="field-error">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary auth-submit">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span>Already have an account?</span>
+            <a href="{% url 'login' %}">Log in</a>
+        </div>
+    </div>
+
+    <p class="auth-note">
+        Organize meetings. Capture decisions. Track action items.
     </p>
 </div>
 {% endblock %}
